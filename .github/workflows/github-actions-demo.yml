@@ -14,9 +14,9 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
+          mkdir ${{ github.workspace }}/build
+          cd ${{ github.workspace }}/build
           ls ${{ github.workspace }}
-      - run: mkdir build
-      - run: cd build
-      - run: qmake ../CloudCross.pro
-      - run: make
+          qmake ../CloudCross.pro
+          make
       - run: echo "🍏 This job's status is ${{ job.status }}."

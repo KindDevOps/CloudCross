@@ -18,8 +18,8 @@ jobs:
           cd ${{ github.workspace }}/build
           ls ${{ github.workspace }}
           qmake ../CloudCross.pro
-          cat Makefile
-          make
+          #cat Makefile
+          #make
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v3
@@ -37,10 +37,17 @@ jobs:
         run: |
           env
           export DEBIAN_FRONTEND=noninteractive
-          mkdir ${{ github.workspace }}/package_build_dir
-          cd ${{ github.workspace }}/package_build_dir
-          mkdir -p cloudcross/debian
-          cat <<EOF >> cloudcross/debian/control
+          #mkdir ${{ github.workspace }}/package_build_dir
+          cd ${{ github.workspace }}/build
+          mkdir -p debian
+          cat <<EOF >> debian/control
+          Source: cloudcross 
+          Maintainer: Mikhail Usik <kind.devops@gmail.com>
+          Build-Depends: debhelper (>= 8.0.0)
+          Standards-Version: 0.0.1
+          Section: utils
+          Depends: ${shlibs:Depends}, ${misc:Depends}
+
           Package: cloudcross
           Architecture: amd64
           Maintainer: kind.devops@gmail.com
@@ -48,12 +55,17 @@ jobs:
           Version: 0.1
           Description: The CloudCross is a open source project for a synchronization between your devices and various cloud storages.
           EOF
-          mkdir -p cloudcross/usr/bin
-          cp ${{ github.workspace }}/build/ccross-app/ccross cloudcross/usr/bin/ccross
-          cp ${{ github.workspace }}/build/ccross-curl-executor/ccross-curl cloudcross/usr/bin/ccross-curl
-          chmod 755 cloudcross/usr/bin/ccross
-          chmod 755 cloudcross/usr/bin/ccross-curl
-          cd cloudcross
+          cat <<EOF >> debian/rules
+          #!/usr/bin/make -f
+          %:  
+            dh $@
+          EOF
+          #mkdir -p cloudcross/usr/bin
+          #cp ${{ github.workspace }}/build/ccross-app/ccross cloudcross/usr/bin/ccross
+          #cp ${{ github.workspace }}/build/ccross-curl-executor/ccross-curl cloudcross/usr/bin/ccross-curl
+          #chmod 755 cloudcross/usr/bin/ccross
+          #chmod 755 cloudcross/usr/bin/ccross-curl
+          #cd cloudcross
           dch --create --distribution unstable --package "cloudcross" --newversion 0.0.0.0-0.test "The CloudCross is a open source project for a synchronization between your devices and various cloud storages."
           debuild -k${{ steps.import_gpg.outputs.keyid }} -S
           #dpkg-deb --build cloudcross

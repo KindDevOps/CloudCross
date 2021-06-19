@@ -41,8 +41,11 @@ jobs:
           cd cloudcross
           mv ./DEBIAN ./debian
           dch --create --distribution unstable --package "cloudcross" --newversion 0.0.0.0-0.test "The CloudCross is a open source project for a synchronization between your devices and various cloud storages."
+          echo "files in `pwd`"
           ls -lah
+          echo "files in `pwd`\debian"
+          ls ./debian/ -lah
           find ${{ github.workspace }}/ -name *.deb
-          dput ppa:kind-devops/ppa changelog
+          dput ppa:kind-devops/ppa debian/changelog
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

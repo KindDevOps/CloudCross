@@ -1,7 +1,7 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -12,11 +12,31 @@ jobs:
         uses: actions/checkout@v2
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: Building...
         run: |
           mkdir ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build
           ls ${{ github.workspace }}
           qmake ../CloudCross.pro
           make
+      - name: Packaging...
+        run: |
+          mkdir ~/package_build_dir
+          cd ~/package_build_dir
+          mkdir -p cloudcross/DEBIAN
+          cat <<EOF >> cloudcross/DEBIAN/control
+          Package: cloudcross
+          Architecture: amd64
+          Maintainer: kind.devops@gmail.com
+          Priority: optional
+          Version: 0.1
+          Description: The CloudCross is a open source project for a synchronization between your devices and various cloud storages.
+          EOF
+          mkdir -p cloudcross/usr/bin
+          cp ${{ github.workspace }}/build/ccross-app/ccross cloudcross/usr/bin/ccross
+          cp ${{ github.workspace }}/build/ccross-curl-executor/ccross-curl cloudcross/usr/bin/ccross-curl
+          chmod 755 cloudcross/usr/bin/ccross
+          chmod 755 cloudcross/usr/bin/ccross-curl
+          dpkg-deb --build cloudcross
+          find ~/ -name *.deb
       - run: echo "🍏 This job's status is ${{ job.status }}."

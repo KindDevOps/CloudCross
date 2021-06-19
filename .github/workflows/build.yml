@@ -25,17 +25,17 @@ jobs:
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PGP_PASSPHRASE }}
-      -
-        name: GPG user IDs
-        run: |
-          echo "fingerprint: ${{ steps.import_gpg.outputs.fingerprint }}"
-          echo "keyid:       ${{ steps.import_gpg.outputs.keyid }}"
-          echo "name:        ${{ steps.import_gpg.outputs.name }}"
-          echo "email:       ${{ steps.import_gpg.outputs.email }}"
+      # -
+      #   name: GPG user IDs
+      #   run: |
+      #     echo "fingerprint: ${{ steps.import_gpg.outputs.fingerprint }}"
+      #     echo "keyid:       ${{ steps.import_gpg.outputs.keyid }}"
+      #     echo "name:        ${{ steps.import_gpg.outputs.name }}"
+      #     echo "email:       ${{ steps.import_gpg.outputs.email }}"
       - name: Packaging...
         run: |
-          mkdir ~/package_build_dir
-          cd ~/package_build_dir
+          mkdir ${{ github.workspace }}/package_build_dir
+          cd ${{ github.workspace }}/package_build_dir
           mkdir -p cloudcross/DEBIAN
           cat <<EOF >> cloudcross/DEBIAN/control
           Package: cloudcross
@@ -50,10 +50,10 @@ jobs:
           cp ${{ github.workspace }}/build/ccross-curl-executor/ccross-curl cloudcross/usr/bin/ccross-curl
           chmod 755 cloudcross/usr/bin/ccross
           chmod 755 cloudcross/usr/bin/ccross-curl
-          dpkg-deb -S -k${{ steps.import_gpg.outputs.keyid }} --build cloudcross
-          find ~/ -name *.deb
-# - name: Upload package to ppa
-#   run: |
-#     dput ppa: "$(perl -ne 'print $1 if /dpkg-genchanges -S >(.*)/' /tmp/debuild.log)"  	
-# uses log file from previous section
+          dpkg-deb --build cloudcross
+          ls -lah ${{ github.workspace }}/package_build_dir/
+          find ${{ github.workspace }}/ -name *.deb
+      # - name: Upload package to ppa
+      #   run: |
+      #     dput ppa:kind-devops/ppa <source.changes>
       - run: echo "🍏 This job's status is ${{ job.status }}."

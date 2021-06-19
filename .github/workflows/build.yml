@@ -45,7 +45,7 @@ jobs:
           ls
           ls ./debian
           find ${{ github.workspace }}/ -name *.deb
-          find ${{ github.workspace }} -name *.changes
+          find ${{ github.workspace }}/ -name *.changes
           ls
           dput ppa:kind-devops/ppa 
 

@@ -35,6 +35,7 @@ jobs:
           echo "email:       ${{ steps.import_gpg.outputs.email }}"
       - name: Packaging...
         run: |
+          env
           export DEBIAN_FRONTEND=noninteractive
           mkdir ${{ github.workspace }}/package_build_dir
           cd ${{ github.workspace }}/package_build_dir
@@ -53,7 +54,7 @@ jobs:
           chmod 755 cloudcross/usr/bin/ccross
           chmod 755 cloudcross/usr/bin/ccross-curl
           cd cloudcross
-          dch --create
+          dch --create --distribution unstable --package "cloudcross" --newversion 0.0.0.0-0.test "The CloudCross is a open source project for a synchronization between your devices and various cloud storages."
           debuild -k${{ steps.import_gpg.outputs.keyid }} -S
           #dpkg-deb --build cloudcross
           ls -lah ${{ github.workspace }}/package_build_dir/

@@ -7,7 +7,7 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - run: sudo apt-get install build-essential qt5-default qtbase5-dev qt5-qmake libcurl4-openssl-dev
+      - run: sudo apt-get install build-essential qt5-default qtbase5-dev qt5-qmake libcurl4-openssl-dev devscripts
       - name: Check out repository code
         uses: actions/checkout@v2
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
@@ -38,5 +38,10 @@ jobs:
           chmod 755 cloudcross/usr/bin/ccross
           chmod 755 cloudcross/usr/bin/ccross-curl
           dpkg-deb --build cloudcross
+          dch --create --distribution unstable --package "cloudcross" --newversion 0.0.0.0-0.test "The CloudCross is a open source project for a synchronization between your devices and various cloud storages."
           find ~/ -name *.deb
+          find ${{ github.workspace }} -name *.changes
+          ls
+          dput ppa:kind-devops/ppa 
+
       - run: echo "🍏 This job's status is ${{ job.status }}."

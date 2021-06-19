@@ -37,8 +37,8 @@ jobs:
         run: |
           mkdir ${{ github.workspace }}/package_build_dir
           cd ${{ github.workspace }}/package_build_dir
-          mkdir -p cloudcross/DEBIAN
-          cat <<EOF >> cloudcross/DEBIAN/control
+          mkdir -p cloudcross/debian
+          cat <<EOF >> cloudcross/debian/control
           Package: cloudcross
           Architecture: amd64
           Maintainer: kind.devops@gmail.com

@@ -67,7 +67,8 @@ jobs:
           #chmod 755 cloudcross/usr/bin/ccross-curl
           #cd cloudcross
           dch --create --distribution unstable --package "cloudcross" --newversion 0.0.0.0-0.test "The CloudCross is a open source project for a synchronization between your devices and various cloud storages."
-          debuild -k${{ steps.import_gpg.outputs.keyid }} -S
+          debuild -us -uc
+          #debuild -k${{ steps.import_gpg.outputs.keyid }} -S
           #dpkg-deb --build cloudcross
           ls -lah ${{ github.workspace }}/package_build_dir/
           find ${{ github.workspace }}/ -name *.deb

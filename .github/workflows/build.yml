@@ -21,8 +21,8 @@ jobs:
           make
       - name: Packaging...
         run: |
-          mkdir ~/package_build_dir
-          cd ~/package_build_dir
+          mkdir ${{ github.workspace }}/package_build_dir
+          cd ${{ github.workspace }}/package_build_dir
           mkdir -p cloudcross/DEBIAN
           cat <<EOF >> cloudcross/DEBIAN/control
           Package: cloudcross
@@ -38,8 +38,10 @@ jobs:
           chmod 755 cloudcross/usr/bin/ccross
           chmod 755 cloudcross/usr/bin/ccross-curl
           dpkg-deb --build cloudcross
+          cd cloudcross
+          mv ./DEBIAN ./debian
           dch --create --distribution unstable --package "cloudcross" --newversion 0.0.0.0-0.test "The CloudCross is a open source project for a synchronization between your devices and various cloud storages."
-          find ~/ -name *.deb
+          find ${{ github.workspace }}/ -name *.deb
           find ${{ github.workspace }} -name *.changes
           ls
           dput ppa:kind-devops/ppa 

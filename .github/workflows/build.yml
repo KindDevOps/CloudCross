@@ -50,9 +50,10 @@ jobs:
           cp ${{ github.workspace }}/build/ccross-curl-executor/ccross-curl cloudcross/usr/bin/ccross-curl
           chmod 755 cloudcross/usr/bin/ccross
           chmod 755 cloudcross/usr/bin/ccross-curl
-          dpkg-deb -S -k${{ steps.import_gpg.outputs.keyid }}" --build cloudcross
+          dpkg-deb -S -k${{ steps.import_gpg.outputs.keyid }} --build cloudcross
           find ~/ -name *.deb
-      - name: Upload package to ppa
-        run: |
-          dput ppa: "$(perl -ne 'print $1 if /dpkg-genchanges -S >(.*)/' /tmp/debuild.log)"  	# uses log file from previous section
+# - name: Upload package to ppa
+#   run: |
+#     dput ppa: "$(perl -ne 'print $1 if /dpkg-genchanges -S >(.*)/' /tmp/debuild.log)"  	
+# uses log file from previous section
       - run: echo "🍏 This job's status is ${{ job.status }}."

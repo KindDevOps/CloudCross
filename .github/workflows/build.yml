@@ -52,6 +52,7 @@ jobs:
           chmod 755 cloudcross/usr/bin/ccross
           chmod 755 cloudcross/usr/bin/ccross-curl
           cd cloudcross
+          dch -i --create
           debuild -k${{ steps.import_gpg.outputs.keyid }} -S
           #dpkg-deb --build cloudcross
           ls -lah ${{ github.workspace }}/package_build_dir/
